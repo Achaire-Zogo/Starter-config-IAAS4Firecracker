@@ -116,7 +116,26 @@ start_docker() {
         exit 1
     fi
     
+    # Construire les fichiers JAR pour chaque service
+    print_info "Construction des fichiers JAR pour chaque service..."
+    
+    # Service Config
+    cd service-config
+    ./mvn clean package -DskipTests
+    cd ..
+    
+    # Service Registry
+    cd service-registry
+    ./mvn clean package -DskipTests
+    cd ..
+    
+    # Service Proxy
+    cd service-proxy
+    ./mvn clean package -DskipTests
+    cd ..
+    
     # Construire et démarrer les conteneurs
+    print_info "Construction et démarrage des conteneurs Docker..."
     docker-compose up --build -d
     
     print_success "Les conteneurs Docker sont en cours de démarrage!"

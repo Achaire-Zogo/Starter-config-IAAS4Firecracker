@@ -68,9 +68,12 @@ start_local() {
     echo ""
     print_success "Service Config est prêt!"
     
+    # Retour au répertoire principal
+    cd "$(dirname "$0")"
+    
     # Démarrage du service registry
     print_info "Démarrage du Service Registry..."
-    cd ../service-registry
+    cd service-registry
     mvn spring-boot:run &
     
     # Attendre que le service registry soit prêt
@@ -82,9 +85,12 @@ start_local() {
     echo ""
     print_success "Service Registry est prêt!"
     
+    # Retour au répertoire principal
+    cd "$(dirname "$0")"
+    
     # Démarrage du service proxy
     print_info "Démarrage du Service Proxy..."
-    cd ../service-proxy
+    cd service-proxy
     mvn spring-boot:run &
     
     # Attendre que le service proxy soit prêt
@@ -95,13 +101,31 @@ start_local() {
     done
     echo ""
     print_success "Service Proxy est prêt!"
+
+    # Retour au répertoire principal
+    cd "$(dirname "$0")"
+    
+    # Démarrage du service vm Offer
+    print_info "Démarrage du Service Vm Offer..."
+    cd ../service-vm-offers
+    mvn spring-boot:run &
+    
+    # Attendre que le service vm offer soit prêt
+    print_info "Attente du démarrage du Service Vm Offer..."
+    while ! curl -s http://localhost:8083/actuator/health &>/dev/null; do
+        sleep 2
+        echo -n "."
+    done
+    echo ""
+    print_success "Service Vm Offer est prêt!"
     
     print_success "Tous les services sont en cours de démarrage!"
     print_info "
     URLs des services:
     - Service Config: http://localhost:8080
     - Service Registry: http://localhost:8761
-    - Service Proxy: http://localhost:8079"
+    - Service Proxy: http://localhost:8079
+    - Service Vm Offer: http://localhost:8083"
 }
 
 # Fonction pour démarrer les services avec Docker

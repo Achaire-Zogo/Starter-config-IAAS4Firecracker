@@ -66,6 +66,7 @@ services:
     depends_on:
       - service-config
       - service-registry
+      - postgres
     ports:
       - "8084:8084"
     environment:

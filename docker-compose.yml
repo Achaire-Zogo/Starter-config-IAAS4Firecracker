@@ -38,11 +38,20 @@ services:
     networks:
       - microservices-network
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - microservices-network
+
   service-vm-offers:
     build: ../service-vm-offers
     depends_on:
       - service-config
       - service-registry
+      - mysql
     ports:
       - "8083:8083"
     environment:
@@ -53,7 +62,7 @@ services:
       - microservices-network
 
   auth-service:
-    build: ./auth-service
+    build: ../auth-service
     depends_on:
       - service-config
       - service-registry
@@ -66,14 +75,6 @@ services:
     networks:
       - microservices-network
 
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    networks:
-      - microservices-network
 
   mysql:
     image: mysql:8.0
